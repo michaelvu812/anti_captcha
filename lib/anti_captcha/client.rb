@@ -311,6 +311,7 @@ module AntiCaptcha
           websiteURL: options[:website_url],
           websiteKey: options[:website_key],
         }
+        args[:isInvisible] = options[:is_invisible] if [true, false].include?(options[:is_invisible])
 
       when 'RecaptchaV3TaskProxyless'
         args[:task] = {
@@ -439,7 +440,33 @@ module AntiCaptcha
     #
     def report_incorrect_image_catpcha!(task_id)
       args = { taskId: task_id }
-      request('getTaskResult', args)
+      request('reportIncorrectImageCaptcha', args)
+    end
+
+    #
+    # Complaints are accepted only for reCAPTCHAs. A complaint is checked by
+    # 5 workers, 3 of them must confirm it.
+    #
+    # @param [String] task_id The ID of the CAPTCHA task.
+    #
+    # @return [Hash] Information about the complaint.
+    #
+    def report_incorrect_recatpcha!(task_id)
+      args = { taskId: task_id }
+      request('reportIncorrectRecaptcha', args)
+    end
+
+    #
+    # Complaints are accepted only for hCAPTCHAs. A complaint is checked by
+    # 5 workers, 3 of them must confirm it.
+    #
+    # @param [String] task_id The ID of the CAPTCHA task.
+    #
+    # @return [Hash] Information about the complaint.
+    #
+    def report_incorrect_hcatpcha!(task_id)
+      args = { taskId: task_id }
+      request('reportIncorrectHcaptcha', args)
     end
 
     #
