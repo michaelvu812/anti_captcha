@@ -19,6 +19,7 @@ module AntiCaptcha
       uri     = URI(options[:url])
       payload = options[:json_payload] || '{}'
       timeout = options[:timeout] || 60
+      ssl_version = options[:ssl_version]
       headers = { 'User-Agent' => AntiCaptcha::USER_AGENT,
         'Content-Type' => 'application/json' }
 
@@ -29,6 +30,7 @@ module AntiCaptcha
       http.use_ssl = true if (uri.scheme == 'https')
       http.open_timeout = timeout
       http.read_timeout = timeout
+      http.ssl_version = ssl_version if ssl_version.present?
       res = http.request(req)
       res.body
 

@@ -6,7 +6,7 @@ module AntiCaptcha
     BASE_URL = 'https://api.anti-captcha.com/:action'
     PROXYABLE_TASKS = %w(RecaptchaV2Task FunCaptchaTask HCaptchaTask GeeTestTask)
 
-    attr_accessor :client_key, :timeout, :polling
+    attr_accessor :client_key, :timeout, :polling, :ssl_version
 
     #
     # Creates a client for the Anti Captcha API.
@@ -21,9 +21,10 @@ module AntiCaptcha
     # @return [AntiCaptcha::Client] A Client instance.
     #
     def initialize(client_key, options = {})
-      self.client_key = client_key
-      self.timeout    = options[:timeout] || 120
-      self.polling    = options[:polling] || 5
+      self.client_key  = client_key
+      self.timeout     = options[:timeout] || 120
+      self.polling     = options[:polling] || 5
+      self.ssl_version = options[:ssl_version]
     end
 
     #
@@ -488,6 +489,7 @@ module AntiCaptcha
       response = AntiCaptcha::HTTP.post_request(
         url: BASE_URL.gsub(':action', action),
         timeout: self.timeout,
+        ssl_version: self.ssl_version,
         json_payload: payload.merge(clientKey: self.client_key).to_json
       )
 
